@@ -113,32 +113,34 @@ namespace DimensionGenerator
 
         private static int FiscalYear(DateTime actualDate)
         {
+            /*
             if (actualDate.Month >= 4)
             {
                 return actualDate.Year + 1;
-            }
+            }*/
 
             return actualDate.Year;
         }
 
         private static DateTime FiscalYearBegin(DateTime actualDate)
         {
+            /*
             if (actualDate.Month >= 4)
             {
                 return new DateTime(actualDate.Year, 4, 1);
             }
-            
-            return new DateTime(actualDate.Year - 1, 4, 1);            
+            */
+            return new DateTime(actualDate.Year, 1, 1);                
         }
     
         private static DateTime FiscalYearEnd(DateTime actualDate)
         {
-            if (actualDate.Month >= 4)
+            /*if (actualDate.Month >= 4)
             {
                 return new DateTime(actualDate.Year + 1, 3, 31);
-            }
+            }*/
 
-            return new DateTime(actualDate.Year, 3, 31);
+            return new DateTime(actualDate.Year, 12, 31);
         }
 
         private static DateTime StartOfWeek(DateTime actualDate)
