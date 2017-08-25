@@ -7,6 +7,8 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace DimensionGenerator
 {
     using System;
@@ -53,6 +55,10 @@ namespace DimensionGenerator
                 table.Columns.Add("FiscalYearEnd", typeof(DateTime));
                 table.Columns.Add("WeekBeginDate", typeof(DateTime));
                 table.Columns.Add("WeekEndDate", typeof(DateTime));
+                table.Columns.Add("WeekNumber", typeof(int));
+                table.Columns.Add("WeekKeyString", typeof(string));
+                table.Columns.Add("PayrollWorkedCheckDate", typeof(DateTime));
+                table.Columns.Add("PayrollCurrentCheckDate", typeof(DateTime));
                 table.Columns.Add("IsWeekend", typeof(bool));
 
                 foreach (var date in EachDate(startDate, endDate))
@@ -67,7 +73,7 @@ namespace DimensionGenerator
                     var calMthEnd = new DateTime(date.Year, date.Month, 1).AddMonths(1).AddDays(-1);
                     var calMthNum = date.Month;
                     var calMthName = date.ToString("MMMM");
-                    var calMthNameAbbrev = date.ToString("MMM");
+                    var calMthNameAbbrev = date.ToString("MMM");                    
 
                     var fiscalYear = FiscalYear(date);
                     var fiscalYearBegin = FiscalYearBegin(date);
@@ -75,6 +81,12 @@ namespace DimensionGenerator
 
                     var weekBeginDate = StartOfWeek(date);
                     var weekEndDate = EndOfWeek(date);
+
+                    var weekNumber = WeekNumber(date);
+                    var weekKeyString = $"{calYear}-{weekNumber:00}";
+                    var payrollWorkedCheckDate = PayrollWorkedCheckDate(date);
+                    var payrollCurrentCheckDate = PayrollCurrentCheckDate(date);
+                    //var weekKeyString = string.Format("{0}-{1:00}", calYear, weekNumber);
 
                     var isWeekend = date.DayOfWeek == DayOfWeek.Sunday || date.DayOfWeek == DayOfWeek.Saturday;
 
@@ -96,6 +108,10 @@ namespace DimensionGenerator
                         fiscalYearEnd,
                         weekBeginDate,
                         weekEndDate,
+                        weekNumber,
+                        weekKeyString,
+                        payrollWorkedCheckDate,
+                        payrollCurrentCheckDate,
                         isWeekend);
                 }
 
@@ -157,6 +173,27 @@ namespace DimensionGenerator
         private static DateTime EndOfWeek(DateTime actualDate)
         {
             return actualDate.DayOfWeek == DayOfWeek.Sunday ? actualDate : actualDate.AddDays(7 - (int)actualDate.DayOfWeek);
+        }
+
+        private static int WeekNumber(DateTime actualDate)
+        {
+            DateTimeFormatInfo dateTimeFormat = DateTimeFormatInfo.CurrentInfo;
+            if (dateTimeFormat == null)
+            {
+                return 0;
+            }
+            Calendar cal = dateTimeFormat.Calendar;
+            return cal.GetWeekOfYear(actualDate, CalendarWeekRule.FirstDay, DayOfWeek.Monday);
+        }
+
+        private static DateTime PayrollWorkedCheckDate(DateTime actualDate)
+        {
+            return StartOfWeek(actualDate).AddDays(11);
+        }
+
+        private static DateTime PayrollCurrentCheckDate(DateTime actualDate)
+        {
+            return StartOfWeek(actualDate).AddDays(4);
         }
     }
 }
