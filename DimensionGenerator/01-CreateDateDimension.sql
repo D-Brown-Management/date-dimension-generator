@@ -16,6 +16,7 @@
 	[FiscalYearEnd] [datetime] NULL,
 	[WeekBeginDate] [datetime] NULL,
 	[WeekEndDate] [datetime] NULL,
+	[WeekNumber] [int] NULL,
 	[IsWeekend] [bit] NULL,
  CONSTRAINT [PK_DateDimension] PRIMARY KEY CLUSTERED 
 (
